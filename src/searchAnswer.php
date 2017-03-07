@@ -46,7 +46,7 @@ class searchAnswer
       $s_url=$this->searchURL;
       switch ($s_url) {
         case (preg_match('/https?:\/\/(www\.)?w3schools.com\//', $s_url) ? true : false):
-          $answer=$this->getW3Answer();
+          $answer=$this->getWschoolAnswer();
           break;
         default:
           $this->stackQuestionId=$this->getQuestionId($this->searchURL);
@@ -95,42 +95,47 @@ class searchAnswer
     }
   }
 
-  public function getW3Answer()
+  public function getWschoolAnswer()
   {
-    $html=file_get_contents("$this->searchURL");
+    $url=$this->searchURL;
+    $html=file_get_contents($url);
     $dom = new DOMDocument();
-    $dom->loadHTML($html);
-    $main=$dom->getElementById('main');
-    $message=$dom->saveHTML($main);
-    $message="$message\r\nMore : $this->searchURL";
-    // $xpath = new DomXPath($dom);
-    // $classname='w3-clear nextprev';
-    // $prevnext = $xpath->query("//*[contains(@class, '$classname')]");
-    // $classname='w3-btn';
-    // $w3Btn= $xpath->query("//*[contains(@class, '$classname')]");
-    // $classname='ezoic-ad';
-    // $ad=$xpath->query("//*[contains(@class, '$classname')]");
-    // for ($i=0; $i < $prevnext->length; $i++) {
-    //   if($table = $prevnext->item($i)){
-    //       $table ->parentNode->removeChild($table);
-    //   }
-    // }
-    // for ($i=0; $i < $w3Btn->length; $i++) {
-    //   if($table = $w3Btn->item($i)){
-    //       $table->parentNode->removeChild($table);
-    //   }
-    // }
-    // for ($i=0; $i < $ad->length; $i++) {
-    //   if($table = $ad->item($i)){
-    //       $table->parentNode->removeChild($table);
-    //   }
-    // }
-    // $main=$dom->getElementById('main');
-    // $message=$dom->saveHTML($main);
-    // $message=str_replace("<hr>","\r\n\r\n",$message);
-    // $message=str_replace("<br>","\r\n\r\n",$message);
-    // $message=strip_tags($message);
-    return $message;
+    if ($dom->loadHTML($html)) {
+      $main=$dom->getElementById('main');
+      $message=$dom->saveHTML($main);
+      $message="$message\r\nMore : $this->searchURL";
+      // $xpath = new DomXPath($dom);
+      // $classname='w3-clear nextprev';
+      // $prevnext = $xpath->query("//*[contains(@class, '$classname')]");
+      // $classname='w3-btn';
+      // $w3Btn= $xpath->query("//*[contains(@class, '$classname')]");
+      // $classname='ezoic-ad';
+      // $ad=$xpath->query("//*[contains(@class, '$classname')]");
+      // for ($i=0; $i < $prevnext->length; $i++) {
+      //   if($table = $prevnext->item($i)){
+      //       $table ->parentNode->removeChild($table);
+      //   }
+      // }
+      // for ($i=0; $i < $w3Btn->length; $i++) {
+      //   if($table = $w3Btn->item($i)){
+      //       $table->parentNode->removeChild($table);
+      //   }
+      // }
+      // for ($i=0; $i < $ad->length; $i++) {
+      //   if($table = $ad->item($i)){
+      //       $table->parentNode->removeChild($table);
+      //   }
+      // }
+      // $main=$dom->getElementById('main');
+      // $message=$dom->saveHTML($main);
+      // $message=str_replace("<hr>","\r\n\r\n",$message);
+      // $message=str_replace("<br>","\r\n\r\n",$message);
+      // $message=strip_tags($message);
+      return $message;
+    }
+    else {
+      return "something went wrong :(";
+    }
   }
 }
 
