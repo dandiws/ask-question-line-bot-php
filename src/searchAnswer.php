@@ -51,7 +51,7 @@ class searchAnswer
         $this->stackQuestionId=$this->getQuestionId($this->searchURL);
         $answer=$this->getStackAnswer();
       }
-      
+
       if ($answer) {
         return $answer;
       }
@@ -95,46 +95,42 @@ class searchAnswer
   }
 public function getW3schoolsAnswer()
 {
-  return "In progress";
-}
-  public function getWschoolAnswer()
-  {
-    $url=$this->searchURL;
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    $html=curl_exec($curl);
-    $dom = new DOMDocument();
-    $dom->loadHTML($html);
-    $xpath = new DomXPath($dom);
-    $classname='w3-clear nextprev';
-    $prevnext = $xpath->query("//*[contains(@class, '$classname')]");
-    $classname='w3-btn';
-    $w3Btn= $xpath->query("//*[contains(@class, '$classname')]");
-    $classname='ezoic-ad';
-    $ad=$xpath->query("//*[contains(@class, '$classname')]");
-    for ($i=0; $i < $prevnext->length; $i++) {
-      if($table = $prevnext->item($i)){
-          $table ->parentNode->removeChild($table);
-      }
+  $url=$this->searchURL;
+  $curl = curl_init();
+  curl_setopt($curl, CURLOPT_URL, $url);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  $html=curl_exec($curl);
+  $dom = new DOMDocument();
+  $dom->loadHTML($html);
+  $xpath = new DomXPath($dom);
+  $classname='w3-clear nextprev';
+  $prevnext = $xpath->query("//*[contains(@class, '$classname')]");
+  $classname='w3-btn';
+  $w3Btn= $xpath->query("//*[contains(@class, '$classname')]");
+  $classname='ezoic-ad';
+  $ad=$xpath->query("//*[contains(@class, '$classname')]");
+  for ($i=0; $i < $prevnext->length; $i++) {
+    if($table = $prevnext->item($i)){
+        $table ->parentNode->removeChild($table);
     }
-    for ($i=0; $i < $w3Btn->length; $i++) {
-      if($table = $w3Btn->item($i)){
-          $table->parentNode->removeChild($table);
-      }
-    }
-    for ($i=0; $i < $ad->length; $i++) {
-      if($table = $ad->item($i)){
-          $table->parentNode->removeChild($table);
-      }
-    }
-    $main=$dom->getElementById('main');
-    $message=$dom->saveHTML($main);
-    $message=str_replace("<hr>","\r\n\r\n",$message);
-    $message=str_replace("<br>","\r\n\r\n",$message);
-    $message=strip_tags($message);
-    return $message;
   }
+  for ($i=0; $i < $w3Btn->length; $i++) {
+    if($table = $w3Btn->item($i)){
+        $table->parentNode->removeChild($table);
+    }
+  }
+  for ($i=0; $i < $ad->length; $i++) {
+    if($table = $ad->item($i)){
+        $table->parentNode->removeChild($table);
+    }
+  }
+  $main=$dom->getElementById('main');
+  $message=$dom->saveHTML($main);
+  $message=str_replace("<hr>","\r\n\r\n",$message);
+  $message=str_replace("<br>","\r\n\r\n",$message);
+  $message=strip_tags($message);
+  return $message;
+}
 }
 
  ?>
