@@ -63,6 +63,7 @@ $app->post('/', function ($request, $response)
 					$stackAnswer=strip_tags($stackAnswer);
 					$more="More answer here : ".$search->getQuestionURL();
 					$message="$stackQuestion\r\n\r\n$stackAnswer\r\n$more";
+					$message=htmlspecialchars_decode($message);
 				}
 				else {
 					$message="I'm sorry. I don't think theres is no answer for that question :(";
