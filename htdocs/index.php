@@ -56,23 +56,9 @@ $app->post('/', function ($request, $response)
 				$question=$event['message']['text'];
 				$search =new searchAnswer($question);
 				$search->getGoogleResult();
-				$stackresult=json_decode($search->getStackAnswer());
-				if ($stackresult) {
-					$stackQuestion=$stackresult->question;
-					$stackAnswer=$stackresult->answer;
-					$stackAnswer=strip_tags($stackAnswer);
-					$more="More answer here : ".$search->getQuestionURL();
-					$message="$stackQuestion\r\n\r\n$stackAnswer\r\n$more";
-					$message=htmlspecialchars_decode($message);
-				}
-				else {
-					$message="I'm sorry. I don't think theres is no answer for that question :(";
-				}
+				$message=$search->getAnswer();
 				$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
-				$result = $bot->pushMessage($event['source']['userId'], $textMessageBuilder);
-				// or we can use pushMessage() instead to send reply message
-				// $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($event['message']['text']);
-				// $result = $bot->pushMessage($event['source']['userId'], $textMessageBuilder);
+				$result = $bot->pushMessage($event['source']['userId'], $textMessageBuilder);				
 				return $result->getHTTPStatus() . ' ' . $result->getRawBody();
 			}
 			elseif ($event['message']['type'] == 'sticker') {

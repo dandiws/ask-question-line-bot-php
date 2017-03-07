@@ -8,7 +8,7 @@ class searchAnswer
 {
   public $userQuestion;
   public $stackQuestionId=null;
-  public $questionURL;
+  public $searchURL;
 
   function __construct($question)
   {
@@ -19,8 +19,8 @@ class searchAnswer
       preg_match('/\d+/', $link, $qid);
   	return $qid[0];
   }
-  public function getQuestionURL(){
-    return $this->questionURL;
+  public function getsearchURL(){
+    return $this->searchURL;
   }
 
   public function getGoogleResult()
@@ -33,16 +33,38 @@ class searchAnswer
     if ($response->hasResults()) {
     	$googleResult=$response->getResults();
     	$link=$googleResult[0]->getLink();
-      $this->questionURL=$link;
-    	$questionId=$this->getQuestionId($link);
-      $this->stackQuestionId=$questionId;
+      $this->searchURL=$link;
+    }
+  }
+
+  public function getAnswer()
+  {
+    if ($this->searchURL==null) {
+      return "Sorry, I don't think I have answer for that question :(";
+    }
+    else {
+      $s_url=$this->searchURL;
+      switch ($s_url) {
+        case (preg_match('/https?:\/\/(www\.)?w3schools.com\//', $s_url) ? true : false):
+          $answer=$this->getW3Answer();
+          break;
+        default:
+          $this->stackQuestionId=$this->getQuestionId($this->searchURL);
+          $answer=$this->getStackAnswer();
+          break;
+      }
+      if ($answer) {
+        return $answer;
+      }
+
+      return "Sorry, I don't think I have answer for that question :(";
     }
   }
 
   public function getStackAnswer()
   {
     if ($this->stackQuestionId!=null) {
-      $qurl=$this->questionURL;
+      $qurl=$this->searchURL;
       switch ($qurl) {
         case (preg_match('/http:\/\/(\S+)\.stackexchange\.com\/questions\//', $qurl, $catch) ? true : false):
           $site=$catch[1];
@@ -61,7 +83,11 @@ class searchAnswer
         $mostResult=$stackResult->items[0];
         $question=$mostResult->title;
         $answer=$mostResult->body;
-        return json_encode(array('question' => $question,'answer'=>$answer ));
+        $answer=strip_tags($answer);
+        $more="More answer here : ".$this->searchURL;
+        $message="$question\r\n\r\n$answer\r\n$more";
+        $message=htmlspecialchars_decode($message);
+        return $message;
       }
       else {
         return false;
@@ -69,6 +95,43 @@ class searchAnswer
     }
   }
 
+  public function getW3Answer()
+  {
+    $html=file_get_contents("$this->searchURL");
+    $dom = new DOMDocument();
+    $dom->loadHTML($html);
+    $main=$dom->getElementById('main');
+    $message=$dom->saveHTML($main);
+    $message="$message\r\nMore : $this->searchURL";
+    // $xpath = new DomXPath($dom);
+    // $classname='w3-clear nextprev';
+    // $prevnext = $xpath->query("//*[contains(@class, '$classname')]");
+    // $classname='w3-btn';
+    // $w3Btn= $xpath->query("//*[contains(@class, '$classname')]");
+    // $classname='ezoic-ad';
+    // $ad=$xpath->query("//*[contains(@class, '$classname')]");
+    // for ($i=0; $i < $prevnext->length; $i++) {
+    //   if($table = $prevnext->item($i)){
+    //       $table ->parentNode->removeChild($table);
+    //   }
+    // }
+    // for ($i=0; $i < $w3Btn->length; $i++) {
+    //   if($table = $w3Btn->item($i)){
+    //       $table->parentNode->removeChild($table);
+    //   }
+    // }
+    // for ($i=0; $i < $ad->length; $i++) {
+    //   if($table = $ad->item($i)){
+    //       $table->parentNode->removeChild($table);
+    //   }
+    // }
+    // $main=$dom->getElementById('main');
+    // $message=$dom->saveHTML($main);
+    // $message=str_replace("<hr>","\r\n\r\n",$message);
+    // $message=str_replace("<br>","\r\n\r\n",$message);
+    // $message=strip_tags($message);
+    return $message;
+  }
 }
 
  ?>
