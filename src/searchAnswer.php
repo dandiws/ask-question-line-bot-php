@@ -44,15 +44,14 @@ class searchAnswer
     }
     else {
       $s_url=$this->searchURL;
-      switch ($s_url) {
-        case (preg_match('/https?:\/\/(www\.)?w3schools.com\//', $s_url) ? true : false):
-          $answer=$this->getW3schoolsAnswer();
-          break;
-        default:
-          $this->stackQuestionId=$this->getQuestionId($this->searchURL);
-          $answer=$this->getStackAnswer();
-          break;
+      if (preg_match('/https?:\/\/(www\.)?w3schools.com\//', $s_url)) {
+        $answer=$this->getW3schoolsAnswer();
       }
+      else {
+        $this->stackQuestionId=$this->getQuestionId($this->searchURL);
+        $answer=$this->getStackAnswer();
+      }
+      
       if ($answer) {
         return $answer;
       }
