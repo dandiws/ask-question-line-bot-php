@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/../lib/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use \LINE\LINEBot\SignatureValidator as SignatureValidator;
 
