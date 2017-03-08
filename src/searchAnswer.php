@@ -45,7 +45,7 @@ class searchAnswer
     else {
       $s_url=$this->searchURL;
       if (preg_match('/https?:\/\/(www\.)?w3schools.com\//', $s_url)) {
-        $answer=$this->getW3schoolsAnswer();
+        $answer=$this->getWschoolAnswer();
       }
       else {
         $this->stackQuestionId=$this->getQuestionId($this->searchURL);
@@ -97,7 +97,7 @@ public function getW3schoolsAnswer()
 {
   return "In Progress. More : $this->searchURL";
 }
-  public function getWschoolAnswer()
+public function getWschoolAnswer()
   {
     $url=$this->searchURL;
     $curl = curl_init();
