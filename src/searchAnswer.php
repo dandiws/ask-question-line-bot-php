@@ -139,7 +139,8 @@ public function getWschoolAnswer()
   public function messageValidate($message)
   {
     $message=strip_tags($message);
-    $message=preg_replace("/(\\r\\n){3,}/","\r\n\r\n",$message);
+    $message=preg_replace("/(\\r\\n){3,}/","\r\n",$message);
+    //$message=str_replace("\r\n",'\r\n', $message);
     $message=htmlspecialchars_decode($message);
     $message=html_entity_decode($message);
     if (strlen($message)<=2000) {
