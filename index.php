@@ -57,15 +57,24 @@ $app->post('/', function ($request, $response)
 				$search =new searchAnswer($question);
 				$search->getGoogleResult();
 				$message=$search->getAnswer();
-				$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
-				$result = $bot->pushMessage($event['source']['userId'], $textMessageBuilder);
+				if (sizeof($message)==1) {
+					$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
+					$result = $bot->pushMessage($event['source']['userId'], $textMessageBuilder);
+				}
+				else {
+				  foreach ($message as $msg) {
+						$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($msg);
+						$result = $bot->pushMessage($event['source']['userId'], $textMessageBuilder);
+				  }
+				}
 				return $result->getHTTPStatus() . ' ' . $result->getRawBody();
 			}
 			elseif ($event['message']['type'] == 'sticker') {
 				$messages=array("Nice sticker!", "I hope i have one", "That's a cute sticker");
 				$message=$messages[mt_rand(0,sizeof($messages)-1)];
 				$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
-				$result = $bot->replyText($event['replyToken'], $textMessageBuilder);
+				$result = $bot->pushMessage($event['source']['userId'], $textMessageBuilder);
+				//$result = $bot->replyText($event['replyToken'], $textMessageBuilder);
 				//$response = $bot->getProfile($event['source']['userId']);
 				//if ($response->isSucceeded()) {
 				    //$profile = $response->getJSONDecodedBody();

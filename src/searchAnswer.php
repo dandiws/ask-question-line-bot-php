@@ -85,7 +85,7 @@ class searchAnswer
         $answer=strip_tags($answer);
         $more="More answer here : ".$this->searchURL;
         $message="$question\r\n\r\n$answer\r\n$more";
-        $message=htmlspecialchars_decode($message);
+        $message=$this->messageValidate($message);
         return $message;
       }
       else {
@@ -106,6 +106,11 @@ public function getWschoolAnswer()
     $html=curl_exec($curl);
     $dom = new DOMDocument();
     $dom->loadHTML($html);
+    $script = $dom->getElementsByTagName("script");
+    while ($script->length > 0) {
+      $sc = $script->item(0);
+	    $sc->parentNode->removeChild($sc);
+    }
     $xpath = new DomXPath($dom);
     $classname='w3-clear nextprev';
     $prevnext = $xpath->query("//*[contains(@class, '$classname')]");
@@ -133,7 +138,34 @@ public function getWschoolAnswer()
     $message=str_replace("<hr>","\r\n\r\n",$message);
     $message=str_replace("<br>","\r\n\r\n",$message);
     $message=strip_tags($message);
+    $message=$this->messageValidate($message);
     return $message;
+  }
+
+  public function messageValidate($message)
+  {
+    $message=htmlspecialchars_decode($message);
+    $message=html_entity_decode($message);
+    if (strlen($message)<=2000) {
+      return $message;
+    }
+    $longString = $message;
+    $arrayWords = explode(' ', $longString);
+    $maxLineLength = 2000;
+    $currentLength = 0;
+    $index = 0;
+    foreach ($arrayWords as $word) {
+      $wordLength = strlen($word) + 1;
+      if (($currentLength + $wordLength) <= $maxLineLength) {
+        $arrayOutput[$index] .= $word . ' ';
+        $currentLength += $wordLength;
+      } else {
+        $index += 1;
+        $currentLength = $wordLength;
+        $arrayOutput[$index] = $word;
+      }
+    }
+    return $arrayOutput;
   }
 }
 
