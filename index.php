@@ -58,7 +58,7 @@ $app->post('/', function ($request, $response)
 				$search->getGoogleResult();
 				$message=$search->getAnswer();
 				$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
-				$result = $bot->pushMessage($event['source']['userId'], $textMessageBuilder);				
+				$result = $bot->pushMessage($event['source']['userId'], $textMessageBuilder);
 				return $result->getHTTPStatus() . ' ' . $result->getRawBody();
 			}
 			elseif ($event['message']['type'] == 'sticker') {
@@ -77,7 +77,11 @@ $app->post('/', function ($request, $response)
 			}
 		}
 		elseif ($event['type'] == 'follow') {
-			$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder('Terimakasih sudah menambahkan sebagai teman, semoga betah :v');
+			$response = $bot->getProfile($event['source']['userId']);
+			if ($response->isSucceeded()) {
+					$profile = $response->getJSONDecodedBody();
+			}
+			$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder("Hello $profile['displayName'], thanks for adding me as a friend.\nYou can tell me your problem or question and I'll answer if I can.");
 			$sticker= new \LINE\LINEBot\MessageBuilder\StickerMessageBuilder('2','157');
 			$user=$event['source']['userId'];
 			$result = $bot->pushMessage($user,$textMessageBuilder);
