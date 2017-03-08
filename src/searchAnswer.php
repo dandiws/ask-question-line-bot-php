@@ -93,10 +93,7 @@ class searchAnswer
       }
     }
   }
-public function getW3schoolsAnswer()
-{
-  return "In Progress. More : $this->searchURL";
-}
+  
 public function getWschoolAnswer()
   {
     $url=$this->searchURL;
@@ -135,15 +132,13 @@ public function getWschoolAnswer()
     }
     $main=$dom->getElementById('main');
     $message=$dom->saveHTML($main);
-    $message=str_replace("<hr>","\r\n\r\n",$message);
-    $message=str_replace("<br>","\r\n\r\n",$message);
-    $message=strip_tags($message);
     $message=$this->messageValidate($message);
     return $message;
   }
 
   public function messageValidate($message)
   {
+    $message=strip_tags($message);
     $message=htmlspecialchars_decode($message);
     $message=html_entity_decode($message);
     if (strlen($message)<=2000) {

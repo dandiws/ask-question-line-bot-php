@@ -70,18 +70,10 @@ $app->post('/', function ($request, $response)
 				return $result->getHTTPStatus() . ' ' . $result->getRawBody();
 			}
 			elseif ($event['message']['type'] == 'sticker') {
-				$messages=array("Nice sticker!", "I hope i have one", "That's a cute sticker");
+				$messages=array("Nice sticker!", "I hope I have one", "That's a cute sticker","Sooo cute");
 				$message=$messages[mt_rand(0,sizeof($messages)-1)];
 				$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
 				$result = $bot->pushMessage($event['source']['userId'], $textMessageBuilder);
-				//$result = $bot->replyText($event['replyToken'], $textMessageBuilder);
-				//$response = $bot->getProfile($event['source']['userId']);
-				//if ($response->isSucceeded()) {
-				    //$profile = $response->getJSONDecodedBody();
-				    //echo $profile['displayName'];
-				    //echo $profile['pictureUrl'];
-				    //echo $profile['statusMessage'];
-				//}
 				return $result->getHTTPStatus() . ' ' . $result->getRawBody();
 			}
 		}
@@ -97,6 +89,11 @@ $app->post('/', function ($request, $response)
 			$result = $bot->pushMessage($user,$textMessageBuilder);
 			$result = $bot->pushMessage($user,$sticker);
 
+			return $result->getHTTPStatus() . ' ' . $result->getRawBody();
+		}
+		elseif ($event['type']=='join') {
+			$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder("Hello guys, feel free to ask me a question.");
+			$result = $bot->pushMessage($event['source']['groupId'],$textMessageBuilder);
 			return $result->getHTTPStatus() . ' ' . $result->getRawBody();
 		}
 	}
